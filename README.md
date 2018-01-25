@@ -19,7 +19,7 @@ A simple example of creating a crn, simulating it, and plotting it, is given
 here. An explanation of this code in detail can be found in
 `crn/examples/basic_example.py`.
 
-```
+```python
 from crn import *
 
 a, a1, a2, b, c, t, z, nothing = species("A A1 A2 B C T Z nothing")
