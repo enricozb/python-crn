@@ -1,6 +1,6 @@
 import numpy as np
 
-from crn import Expression, Simulation
+from crn import Species, Simulation
 from random import random
 from scipy.integrate import odeint
 
@@ -47,14 +47,18 @@ class CRN:
         Returns the symbolic representation for the rate law of species `s`.
 
         args:
-            s: Species
+            s: Union[Species, str]
                 the species whose rate law in the CRN `self` is desired.
+                `s` can either be an instance of the Species object or
+                the string name of the Species.
         """
-        if type(s) is Expression:
-            if not s.is_species():
-                raise ValueError(
-                        "rate_law_for_species called on complex expression")
-            s, *_ = s.species.keys()
+        if type(s) not in (str, Species):
+            raise ValueError("rate_law_for_species called on non-species. "
+                             "parameter must be a species name (str) or a "
+                             "Species instance.")
+
+        if type(s) is Species:
+            s = species.name
 
         return sum(rxn.net_production(s) * rxn.flux() for rxn in self.system)
 
@@ -99,16 +103,13 @@ class CRN:
         conc_temp = {}
 
         for s, c in conc.items():
-            if type(s) is Expression:
-                if not s.is_species():
-                    raise ValueError("concentrations must only be for "
-                            "species, not complex expressions")
-                s, *_ = s.species.keys()
+            if type(s) not in (str, Species):
+                raise ValueError("CRN.simulate: initial concentrations "
+                                 f"dictionary got a key with type {type(s)}. "
+                                 "Key type should be Species or str.")
 
-            elif type(s) is not str:
-                raise ValueError(
-                    "concentrations must have key type 'str' or 'Expression'"
-                    f" not '{type(s)}'")
+            if type(s) is Species:
+                s = s.name
 
             conc_temp[s] = c
 

@@ -1,4 +1,4 @@
-from crn import Expression
+from crn import Species
 
 class Simulation:
     """
@@ -22,12 +22,14 @@ class Simulation:
         self.sim = sim
 
     def __getitem__(self, s):
-        if type(s) is Expression:
-            if not s.is_species():
-                raise ValueError(
-                        "can't get simulation time series of complex "
-                        f"expression {item}")
-            s, *_ = s.species.keys()
+        if type(s) not in (str, Species):
+            raise ValueError(
+                "Simulation.__getitem__: tried to get item of non-species. "
+                "Type of key must be Species or str. The type of the key "
+                f"passed was {type(s)}")
+
+        if type(s) is Species:
+            s = s.name
 
         return self.sim[s]
 

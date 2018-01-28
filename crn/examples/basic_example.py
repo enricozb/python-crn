@@ -28,7 +28,7 @@ sys = CRN(
 # concentrations that are omitted are assumed to be zero
 # t is an optional parameter for how far to carry out the simulation.
 # if it is omitted, it's defaulted to 20.
-sim = sys.simulate({a: 2.5, b: 2.0}, t=5)
+sim = sys.simulate({a: 2.5, b: 2.0, c: 1.5}, t=5)
 
 # you can access the specific time series of each species by accessing
 # `sim` like you would a dictionary
