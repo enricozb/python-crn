@@ -1,6 +1,23 @@
 from crn import Reaction
 
 class Expression:
+    """
+    Class used for very basic symbolic manipulation of left/right hand
+    side of stoichiometric equations. Not very user friendly; users should
+    just use the `species` functions and manipulate those to get their
+    reactions.
+
+    args:
+        species: Dict[str, int]
+            represents species (string names) and their coefficients (ints)
+            all added together.
+
+    properties:
+        species: Dict[str, int]
+            represents species (string names) and their coefficients (ints)
+            all added together. The same as the argument passed to the
+            constructor
+    """
     def __init__(self, species):
         self.species = species
 
@@ -39,8 +56,16 @@ class Expression:
         return f"Expression({self.species})"
 
     def is_species(self):
+        """
+        Returns true if this expression is a single species. This will
+        at some point become deprecated in favor of a simple Species class.
+        """
         return len(self.species) == 1
 
     def get_species(self):
+        """
+        Returns the names of the species in this expression, not their
+        coefficients.
+        """
         return set(self.species.keys())
 

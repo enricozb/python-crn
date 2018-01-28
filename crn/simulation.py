@@ -1,6 +1,23 @@
 from crn import Expression
 
 class Simulation:
+    """
+    A completed simulation of a CRN. Contains the time-series information
+    of every species in the CRN throughout the simulation. Allows for quick
+    plotting and extraction of simulation data.
+
+    This class probably won't be constructed by a user, thus it's
+    implementation is more internal.
+
+    args:
+        sim: Dict[str, np.ndarray]
+            A dictionary of species name to concentration time series.
+            This dictionary also contains other fields such as "time" and
+            "nothing" which are used for plotting data. This dictionary
+            makes no guarantees that these are the only things it will
+            contain, it may have new fields that are added if they are
+            needed.
+    """
     def __init__(self, sim):
         self.sim = sim
 
@@ -15,6 +32,17 @@ class Simulation:
         return self.sim[s]
 
     def plot(self, filename=None, title=None):
+        """
+        Plots the concentration of all of the species over time.
+
+        args:
+            filename: Optional[str]
+                if present, save the plot to a file `filename`. Otherwise,
+                the plot will show up as a new window.
+
+            title: Optional[str]
+                if present, the plot will have a title `title`.
+        """
         if filename:
             import matplotlib as mpl
             mpl.use('Agg')
