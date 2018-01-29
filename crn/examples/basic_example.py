@@ -38,3 +38,8 @@ z_time_series = sim[z]
 # if the filename is omitted, the plot is shown on a new window.
 sim.plot("sim.png", title="Example Simulation")
 
+
+# The stochastic equivalent of the simulation & plotting above
+sim = sys.stoch_simulate({a: 25, b: 20, c: 15}, t=5)
+sim.plot("stoch_sim.png", title="Example Stochastic Simulation")
+

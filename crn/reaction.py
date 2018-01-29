@@ -96,6 +96,18 @@ class Reaction:
         return (self.products.species.get(species, 0) -
                 self.reactants.species.get(species, 0))
 
+    def discrete_flux(self):
+        """
+        Discrete analog of Reaction.flux: Returns a symbolic representation
+        of the discrete/stochastic reaction rate of this reaction. Essentially
+        the propensity not including the rate constant.
+        """
+        def flux_part(i):
+            s, c = i
+            return reduce(operator.mul, (Symbol(s) - i for i in range(c)))
+
+        return reduce(operator.mul,
+                map(flux_part, self.reactants.species.items()))
 
     def flux(self):
         """

@@ -1,4 +1,10 @@
+import matplotlib
+matplotlib.use("Svg")
+
+import matplotlib.pyplot as plt
+
 from crn import Species
+
 
 class Simulation:
     """
@@ -18,8 +24,9 @@ class Simulation:
             contain, it may have new fields that are added if they are
             needed.
     """
-    def __init__(self, sim):
+    def __init__(self, sim, stochastic=False):
         self.sim = sim
+        self.stochastic = stochastic
 
     def __getitem__(self, s):
         if type(s) not in (str, Species):
@@ -45,20 +52,18 @@ class Simulation:
             title: Optional[str]
                 if present, the plot will have a title `title`.
         """
-        if filename:
-            import matplotlib as mpl
-            mpl.use('Agg')
-
-        import matplotlib.pyplot as plt
-
-
         time = self.sim['time']
-        for species, series in self.sim.items():
+        for species, series in sorted(self.sim.items()):
+            series = self.sim[species]
             if species not in ("time", "nothing"):
                 plt.plot(time, series, label=f"[{species}]")
 
         plt.xlabel("time (seconds)")
-        plt.ylabel("concentration (M)")
+        if self.stochastic:
+            plt.ylabel("molecule counts")
+        else:
+            plt.ylabel("concentration (M)")
+
         plt.legend(loc="best")
         if title:
             plt.title(title)
