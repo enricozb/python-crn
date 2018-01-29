@@ -12,6 +12,7 @@ The current list of dependencies are
 numpy
 scipy
 sympy
+stochpy
 ```
 
 ## Examples
