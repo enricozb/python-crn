@@ -133,7 +133,9 @@ class CRN:
         for species in self.species:
             if species != "nothing":
                 data[species] = smod.data_stochsim.getSimData(species)[:, 1]
-        data["time"] = smod.data_stochsim.getSimData(species)[:, 0]
+                if "time" not in data:
+                    data["time"] = smod.data_stochsim.getSimData(species)[:, 0]
+
         return Simulation(data, stochastic=True)
 
     def write_pscfile(self, filename, amounts):
