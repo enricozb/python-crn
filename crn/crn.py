@@ -158,7 +158,7 @@ class CRN:
                     species = "$pool"
 
                 if c != 1:
-                    formatted_expr.append(f"{{{c}}} * species")
+                    formatted_expr.append(f"{{{c}}}{species}")
                 else:
                     formatted_expr.append(species)
 
@@ -171,14 +171,14 @@ class CRN:
                 reac = fmt_expression(rxn.reactants)
                 prod = fmt_expression(rxn.products)
                 pscfile.write(f"{reac} > {prod}\n")
-                pscfile.write(f"k{i}*{rxn.discrete_flux()}\n")
+                pscfile.write(f"k{i}*{rxn.discrete_flux()}\n\n")
             pscfile.write("\n")
 
             pscfile.write("# Rate constants\n")
             for i, rxn in self.reactions_index.items():
                 pscfile.write(f"k{i} = {rxn.coeff}\n")
 
-            pscfile.write("# Initial Species Counts\n")
+            pscfile.write("\n# Initial Species Counts\n")
 
             # The `amounts` dictionary can have keys of type Species, so
             # we convert everything to the string names of the species.

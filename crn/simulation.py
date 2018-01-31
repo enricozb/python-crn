@@ -1,10 +1,6 @@
-import matplotlib
-matplotlib.use("Svg")
-
 import matplotlib.pyplot as plt
 
 from crn import Species
-
 
 class Simulation:
     """
@@ -52,6 +48,10 @@ class Simulation:
             title: Optional[str]
                 if present, the plot will have a title `title`.
         """
+        if filename:
+            backend = plt.get_backend()
+            plt.switch_backend("Svg")
+
         time = self.sim['time']
         for species, series in sorted(self.sim.items()):
             series = self.sim[species]
@@ -71,7 +71,9 @@ class Simulation:
         if filename:
             plt.savefig(filename)
         else:
-            plt.show()
-        plt.cla()
-        plt.clf()
+            plt.show(block=True)
+
+        if filename:
+            plt.switch_backend(backend)
+
 
