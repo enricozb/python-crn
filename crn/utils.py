@@ -1,16 +1,26 @@
 import os
 import sys
+import matplotlib.pyplot as plt
 
 from contextlib import contextmanager
 
 @contextmanager
-def quiet():
+def no_output():
     sys.stdout = sys.stderr = open(os.devnull, "w")
 
     yield
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
+
+@contextmanager
+def plot_without_xserver():
+    backend = plt.get_backend()
+    plt.switch_backend("Svg")
+
+    yield
+
+    plt.switch_backend(backend)
 
 def datadir(filename=""):
     """

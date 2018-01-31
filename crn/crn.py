@@ -1,11 +1,10 @@
 import numpy as np
 
-
 from crn import Species, Simulation, utils
 from random import random
 from scipy.integrate import odeint
 
-with utils.quiet():
+with utils.no_output():
     import stochpy
 
 class CRN:
