@@ -3,6 +3,12 @@ A CRN simulator based on
 [David Soloveichik's Mathematica CRN Simulator](
 http://users.ece.utexas.edu/~soloveichik/crnsimulator.html)
 
+## Version & Promises
+Currently this is in a pre-alpha state, but already has some reasonable
+features. No guarantees are made for backward-compatibility. That is, some
+of the API calls might change, some of the reaction literals syntax might
+change, etc.
+
 ## Dependencies
 The package is written for Python 3.6+ and definitely won't work on an older
 Python version.
