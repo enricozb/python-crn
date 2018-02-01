@@ -29,14 +29,14 @@ here. An explanation of this code in detail can be found in
 ```python
 from crn import *
 
-a, a1, a2, b, c, t, z, nothing = species("A A1 A2 B C T Z nothing")
+a, a1, a2, b, c, t, z = species("A A1 A2 B C T Z")
 
 sys = CRN(
     a >> a1 + a2,
     a1 + b >> t,
     c >> z,
     (a2 >> z).k(2.5),
-    z + t >> nothing)
+    z + t >> 0)
 
 sys.simulate({a: 2.5, b: 2.0}, t=5).plot("sim.png", title="Example Simulation")
 ```
