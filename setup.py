@@ -11,7 +11,7 @@ requirements = ['scipy', 'numpy', 'stochpy', 'sympy']
 setup(
     name='crn',
     packages=['crn'],
-    version='0.1.0a0',
+    version='0.1.0a1',
     description='A Python3.6+ CRN Simulator',
     long_description=long_description,
     author='Enrico Borba',
