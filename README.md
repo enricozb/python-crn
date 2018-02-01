@@ -50,8 +50,7 @@ Install using `pip` or `pip3` depending on your setup.
 pip3 install crn
 ```
 
-This is broken at the moment since
-[StochPy](https://github.com/SystemsBioinformatics/stochpy) is not 100%
-Python 3 ready. I'll write an install script to modify some of the StochPy
-files to fix for this while I wait for the Pull Request to go through.
+Note: [StochPy](https://github.com/SystemsBioinformatics/stochpy) is not
+Python 3 ready. So, when `crn` is imported, it actually runs `lib2to3` on the
+files that need to be modified within StochPy.
 
