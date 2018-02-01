@@ -45,6 +45,13 @@ More examples will be added soon in the `crn/examples/` folder.
 
 
 ## Installation
-Install it by placing the `crn/` folder in your python path. I'll setup an
-install script soon, or I'll add it to `pip` or something idk.
+Install using `pip` or `pip3` depending on your setup.
+```
+pip3 install crn
+```
+
+This is broken at the moment since
+[StochPy](https://github.com/SystemsBioinformatics/stochpy) is not 100%
+Python 3 ready. I'll write an install script to modify some of the StochPy
+files to fix for this while I wait for the Pull Request to go through.
 
