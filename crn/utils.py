@@ -1,17 +1,29 @@
-import os
-import sys
 import matplotlib.pyplot as plt
+import os
+import pkgutil
+import sys
 
 from contextlib import contextmanager
+from lib2to3.main import main as lib2to3_main
+from types import ModuleType
+from os.path import join, dirname
 
 @contextmanager
 def no_output():
-    sys.stdout = sys.stderr = open(os.devnull, "w")
+    try:
+        sys.stdout = open(os.devnull, "w")
+        sys.stderr = open(os.devnull, "w")
 
-    yield
+        yield
 
-    sys.stdout = sys.__stdout__
-    sys.stderr = sys.__stderr__
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+
+    except:
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+        raise
+
 
 @contextmanager
 def plot_without_xserver():
@@ -21,6 +33,7 @@ def plot_without_xserver():
     yield
 
     plt.switch_backend(backend)
+
 
 def datadir(filename=""):
     """
@@ -35,4 +48,18 @@ def datadir(filename=""):
     if filename:
         return os.path.join(datadir, filename)
     return datadir
+
+
+def stochpy_fix():
+    with no_output():
+        stochpy = pkgutil.get_loader("stochpy")
+
+        if stochpy is None:
+            import stochpy
+
+        pysces_mini_model = join(dirname(stochpy.path),
+            "modules", "PyscesMiniModel.py")
+
+        lib2to3_main("lib2to3.fixes",
+            f"-w -f has_key {pysces_mini_model}".split())
 

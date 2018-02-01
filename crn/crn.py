@@ -3,6 +3,7 @@ import numpy as np
 from crn import Species, Simulation, utils
 from random import random
 from scipy.integrate import odeint
+from importlib import reload
 
 with utils.no_output():
     import stochpy

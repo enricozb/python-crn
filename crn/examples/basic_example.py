@@ -43,7 +43,8 @@ time = sim["time"]
 sim.plot("sim.png", title="Example Simulation")
 
 
-# The stochastic equivalent of the simulation & plotting above
+# The stochastic equivalent of the simulation & but we display the plot
+# instead of saving it to a file.
 sim = sys.stoch_simulate({a: 25, b: 20, c: 15}, t=5)
-sim.plot("stoch_sim.png", title="Example Stochastic Simulation")
+sim.plot(title="Example Stochastic Simulation")
 
