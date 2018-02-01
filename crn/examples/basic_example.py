@@ -19,9 +19,13 @@ sys = CRN(
     c >> z,
     # to change the reaction constant, use this syntax
     (a2 >> z).k(2.5),
+    # to symbolize spontaneous decay or spontaneous generation,
+    # use '0' as the product or reactant, respectively.
     z + t >> 0)
 
-# simulate for the initial concentrations [A]_0 = 1.5 [B]_0 = 2.0.
+# simulate for the initial concentrations
+#    [A]_0 = 2.5, [B]_0 = 2.0, [C]_0 = 1.5
+# until time t = 5.
 # concentrations that are omitted are assumed to be zero
 # t is an optional parameter for how far to carry out the simulation.
 # if it is omitted, it's defaulted to 20.
@@ -30,6 +34,9 @@ sim = sys.simulate({a: 2.5, b: 2.0, c: 1.5}, t=5)
 # you can access the specific time series of each species by accessing
 # `sim` like you would a dictionary
 z_time_series = sim[z]
+
+# to get the time-steps for the simulation access `sim` like this
+time = sim["time"]
 
 # save a plot of the simulation with it's title to the file "sim.png".
 # if the filename is omitted, the plot is shown on a new window.
