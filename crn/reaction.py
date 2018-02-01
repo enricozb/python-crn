@@ -25,6 +25,12 @@ class Reaction:
             The rate constant of the reaction
     """
     def __init__(self, reactants, products, k=1):
+        if reactants == 0:
+            reactants = Species("nothing")
+
+        if products == 0:
+            products = Species("nothing")
+
         if type(reactants) not in (Species, Expression):
             raise ValueError(
                 "Attempted construction of reaction with type of reactants "
@@ -189,6 +195,10 @@ class Expression:
 
 class Species:
     def __init__(self, name):
+        if name == "time":
+            raise ValueError(
+                "Failed to create Species 'time' because it is a reserved "
+                "Species name. Please choose another name for this Species.")
         self.name = name
 
     def __add__(self, other):
@@ -256,5 +266,15 @@ def species(species):
             nothing >> x,
             nothing >> y)
     """
-    return map(Species, species.split())
+    species = species.split()
+    if "nothing" in species:
+        raise ValueError(
+            "Species 'nothing' is reserved and therefore cannot be created \n"
+            "using `species` function. Use '0' in your reactions instead. \n"
+            "For example,\n\n"
+            "    0 >> a\n"
+            "    a + b >> 0"
+            "\n\nOr create 'nothing' directly using the Species constructor.")
+
+    return map(Species, species)
 

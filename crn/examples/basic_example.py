@@ -9,10 +9,7 @@
 from crn import *
 
 # define the species that will be present in your reactions
-# the species `nothing` is special in the sense that it always has a
-# constant concentration of 1. Thus, it can be used as a "waste" or as
-# an unbounded "source".
-a, a1, a2, b, c, t, z, nothing = species("A A1 A2 B C T Z nothing")
+a, a1, a2, b, c, t, z = species("A A1 A2 B C T Z")
 
 # define a CRN, aka the system of reactions
 # reactions by default have a reaction constant of 1
@@ -22,7 +19,7 @@ sys = CRN(
     c >> z,
     # to change the reaction constant, use this syntax
     (a2 >> z).k(2.5),
-    z + t >> nothing)
+    z + t >> 0)
 
 # simulate for the initial concentrations [A]_0 = 1.5 [B]_0 = 2.0.
 # concentrations that are omitted are assumed to be zero
