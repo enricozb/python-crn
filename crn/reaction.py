@@ -205,20 +205,17 @@ class Species:
         if type(other) is Expression:
             return other + Expression({self.name: 1})
         elif type(other) is Species:
-            return Expression({self.name: 1, other.name: 1})
+            return Expression({self.name: 1}) + Expression({other.name: 1})
 
         return NotImplemented
 
-    def __radd__(self, other):
-        if type(other) is Expression:
-            return other + Expression({self.name: 1})
-        elif type(other) is Species:
-            return Expression({self.name: 1, other.name: 1})
-
-        return NotImplemented
+    __radd__ = __add__
 
     def __rshift__(self, other):
         return Reaction(self, other)
+
+    def __rrshift__(self, other):
+        return Reaction(other, self)
 
     def __mul__(self, other):
         if type(other) is int:

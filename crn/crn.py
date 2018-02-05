@@ -78,7 +78,7 @@ class CRN:
                              "Species instance.")
 
         if type(s) is Species:
-            s = species.name
+            s = s.name
 
         return sum(rxn.net_production(s) * rxn.flux() for rxn in self.system)
 
