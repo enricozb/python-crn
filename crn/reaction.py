@@ -53,8 +53,11 @@ class Reaction:
 
     def __str__(self):
         rcts_str = str(self.reactants)
+        '''
         return (f"{' ' * len(rcts_str)} {self.coeff:.1f} \n"
                 f"{self.reactants} ---> {self.products}")
+        '''
+        return f"{self.reactants} ---> {self.products}"
 
     def __repr__(self):
         return (f"Reaction({repr(self.reactants)}, {repr(self.products)}, "
@@ -127,6 +130,23 @@ class Reaction:
         return self.coeff * reduce(operator.mul,
                 map(flux_part, self.reactants.species.items()))
 
+    def propensity(self, species):
+        """
+        Returns the reaction propensity given the current amount of species.
+
+        args:
+            species: Dict[Species, int]
+                mapping species to its current molecule count
+        """
+        prop = self.coeff
+        for r, coeff in self.reactants.species.items():
+            prop *= species.get(Species(r), 0)
+
+            if coeff > 1:
+                raise ValueError(
+                        "Only single coefficient reactions are supported "
+                        "for propensities")
+        return prop
 
 class Expression:
     """
@@ -205,6 +225,9 @@ class Species:
         if type(other) is Expression:
             return other + Expression({self.name: 1})
         elif type(other) is Species:
+            if self == other:
+                return Expression({self.name: 2})
+
             return Expression({self.name: 1, other.name: 1})
 
         return NotImplemented
@@ -231,6 +254,20 @@ class Species:
             return Expression({self.name: other})
 
         return NotImplemented
+
+    def __eq__(self, other):
+        if type(other) is str:
+            return self.name == other
+
+        if type(other) is Species:
+            return self.name == other.name
+
+        return NotImplemented
+
+    __req__ = __eq__
+
+    def __hash__(self):
+        return hash(self.name)
 
     def __repr__(self):
         return self.name
