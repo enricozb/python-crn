@@ -1,4 +1,4 @@
-__all__ = ["species", "CRN"]
+__all__ = ["species", "CRN", "schemas"]
 
 from crn.reaction import *
 from crn.simulation import *

@@ -12,7 +12,7 @@ class Simulation:
     implementation is more internal.
 
     args:
-        sim: Dict[str, np.ndarray]
+        sim: Dict[crn.Species, np.ndarray]
             A dictionary of species name to concentration time series.
             This dictionary also contains other fields such as "time" and
             "nothing" which are used for plotting data. This dictionary
@@ -23,16 +23,18 @@ class Simulation:
     def __init__(self, sim, stochastic=False):
         self.sim = sim
         self.stochastic = stochastic
+        self.time = sim["time"]
+        self.reactions = sim.get("reactions", None)
+
+        del sim["time"]
+        del sim["reactions"]
 
     def __getitem__(self, s):
-        if type(s) not in (str, Species):
+        if type(s) is not Species:
             raise ValueError(
                 "Simulation.__getitem__: tried to get item of non-species. "
-                "Type of key must be Species or str. The type of the key "
+                "Type of key must be Species. The type of the key "
                 f"passed was {type(s)}")
-
-        if type(s) is Species:
-            s = s.name
 
         return self.sim[s]
 
@@ -52,11 +54,10 @@ class Simulation:
             backend = plt.get_backend()
             plt.switch_backend("Svg")
 
-        time = self.sim['time']
         for species, series in sorted(self.sim.items()):
             series = self.sim[species]
-            if species not in ("time", "nothing"):
-                plt.plot(time, series, label=f"[{species}]")
+            if species.name != "nothing":
+                plt.plot(self.time, series, label=f"[{species}]")
 
         plt.xlabel("time (seconds)")
         if self.stochastic:

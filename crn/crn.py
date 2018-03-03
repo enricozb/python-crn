@@ -1,9 +1,10 @@
 import numpy as np
 
 from crn import Species, Simulation, utils
-from random import random
+from numpy import log
+from numpy.random import choice
+from random import random, uniform
 from scipy.integrate import odeint
-from importlib import reload
 
 with utils.no_output():
     import stochpy
@@ -130,11 +131,11 @@ class CRN:
 
         # return data
         data = {}
-        for species in self.species:
-            if species != "nothing":
-                data[species] = smod.data_stochsim.getSimData(species)[:, 1]
+        for sp in self.species:
+            if sp.name != "nothing":
+                data[sp] = smod.data_stochsim.getSimData(sp.name)[:, 1]
                 if "time" not in data:
-                    data["time"] = smod.data_stochsim.getSimData(species)[:, 0]
+                    data["time"] = smod.data_stochsim.getSimData(sp.name)[:, 0]
 
         return Simulation(data, stochastic=True)
 
@@ -154,6 +155,7 @@ class CRN:
             formatted_expr = []
             for species, c in expr.species.items():
                 # special PySCeS Model Description Language Syntax
+                species = species.name
                 if species == "nothing":
                     species = "$pool"
 
@@ -182,23 +184,17 @@ class CRN:
 
             # The `amounts` dictionary can have keys of type Species, so
             # we convert everything to the string names of the species.
-            amounts_copy = {}
-            for sp, amount in amounts.items():
-                if type(sp) is Species:
-                    sp = sp.name
-                amounts_copy[sp] = amount
+            amounts = amounts.copy()
 
             for sp in self.species:
-                if sp not in amounts_copy:
-                    amounts_copy[sp] = 0
+                if sp not in amounts:
+                    amounts[sp] = 0
 
-            if "nothing" in amounts_copy:
-                del amounts_copy["nothing"]
-
-            amounts = amounts_copy
+            if Species("nothing") in amounts:
+                del amounts[Species("nothing")]
 
             for sp in self.species:
-                if sp != "nothing":
+                if sp.name != "nothing":
                     pscfile.write(f"{sp} = {amounts.get(sp, 0)}\n")
 
 
@@ -249,6 +245,97 @@ class CRN:
 
         return Simulation(sol_dict)
 
+    def schema_simulate(self, initial_counts, time=None, steps=None):
+        """
+        Stochastic simulator for reaction schema.
+        """
+        def possible_reactions(state):
+            rxns = []
+            for rxn in self.system:
+                if rxn.is_schema:
+                    for matching_rxn in rxn.possible_reactions(state):
+                        rxns.append(matching_rxn)
+                rxns.append(rxn)
+            return rxns
+
+        for sp in initial_counts:
+            if sp.has_groups():
+                raise ValueError(
+                        "Schema with unmatched groups passed in to "
+                        "'initial_counts'. Did you "
+                        "forget to nullify a Schema's named groups? If "
+                        "`schema` is a variable containing a species "
+                        "returned from schemas(...), make sure to do "
+                        "`{schema(): count}` and not `{schema: count}` when "
+                        "passing as the initial counts of species to "
+                        "'schema_simulate'.")
+
+
+        if time is None and steps is None:
+            time = float("inf")
+            steps = 1000
+        elif time is None:
+            time = float("inf")
+        elif steps is None:
+            steps = float("inf")
+        else:
+            raise ValueError(
+                    "CRN.schema_simulate: both 'time' and 'steps' were "
+                    "passed. Pass in one or the other")
+
+
+        curr_time = curr_steps = 0
+        state = {sp: count for sp, count in initial_counts.items() if count}
+
+        sim = {}
+        history = {}
+        sim["time"] = [0]
+        sim["reactions"] = []
+        for sp, count in state.items():
+            sim[sp] = [count]
+
+        # TODO (enricozb): add species history
+
+
+        while True:
+            if curr_time >= time or curr_steps >= steps:
+                break
+
+            # Grab reactions and propensities
+            rxns = possible_reactions(state)
+            props = [rxn.propensity(state) for rxn in rxns]
+
+            # Pick reaction to occur
+            p_tot = sum(props)
+
+            if p_tot == 0:
+                print("simulation ended before reaching 'time' or 'steps'")
+                break
+
+            rxn = choice(rxns, p=[p / p_tot for p in props])
+            sim["reactions"].append(rxn)
+
+            # Pick dt and register chosen reaction effects
+            for r, c in rxn.reactants.species.items():
+                state[r] -= c
+                sim[r].append(state[r])
+                if state[r] == 0:
+                    del state[r]
+
+            for p, c in rxn.products.species.items():
+                if p not in state:
+                    state[p] = 0
+                    sim[p] = [0] * (curr_steps + 1)
+                state[p] += c
+                sim[p].append(state[p])
+
+            dt = -log(uniform(0, 1)) / p_tot
+            curr_time += dt
+            curr_steps += 1
+
+        return Simulation(sim)
+
+
     def validate(self, func, *, input_species, output_species, N=100,
             eps=1e-2, t=500):
         """
@@ -275,6 +362,4 @@ class CRN:
                         "theoretical": theoretical, "simulated": simulated}
 
         return {"success": True}
-
-
 
