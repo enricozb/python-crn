@@ -286,6 +286,10 @@ class Species:
             if key in self.schema_groups:
                 format_dict[key] = f"(?P<{key}>{self.schema_groups[key]})"
             else:
+                print(self.name)
+                print(key)
+                print(self.schema)
+                print(self.schema_groups)
                 raise RuntimeError(
                         "Schema used in reaction without substituting all "
                         "captured groups")
