@@ -1,4 +1,4 @@
-** This package is no longer actively mantained **
+# This package is no longer actively mantained
 
 # Python CRN
 A CRN simulator based on
@@ -55,4 +55,3 @@ pip3 install crn
 Note: [StochPy](https://github.com/SystemsBioinformatics/stochpy) is not
 Python 3 ready. So, when `crn` is imported, it actually runs `lib2to3` on the
 files that need to be modified within StochPy.
-
