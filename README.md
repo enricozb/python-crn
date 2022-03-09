@@ -1,3 +1,5 @@
+** This package is no longer actively mantained **
+
 # Python CRN
 A CRN simulator based on
 [David Soloveichik's Mathematica CRN Simulator](
@@ -8,9 +10,6 @@ Currently this is in a pre-alpha state, but already has some reasonable
 features. No guarantees are made for backward-compatibility. That is, some
 of the API calls might change, some of the reaction literals syntax might
 change, etc.
-
-Also, since this package is being updated *very* often, **always check for
-updates before use**.
 
 ## Dependencies
 The package is written for Python 3.6+ and definitely won't work on an older
