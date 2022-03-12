@@ -42,6 +42,9 @@ sys = CRN(
 
 sys.simulate({a: 2.5, b: 2.0}, t=5).plot("sim.png", title="Example Simulation")
 ```
+This will output:
+
+![Example Simulation Plot](/crn/examples/sim.png)
 
 More examples will be added soon in the `crn/examples/` folder.
 
